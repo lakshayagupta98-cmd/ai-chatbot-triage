@@ -1,5 +1,19 @@
 # ai-chatbot-triage
 🚀 AI Product Triage Chatbot
+## 🔴 Live Demo
+
+Try the deployed application here:
+
+👉 https://ai-chatbot-api-fk39.onrender.com
+
+Example test inputs:
+- "The app crashes when I click submit"
+- "Add dark mode to dashboard"
+- "How do I reset my password?"
+
+
+
+
 Overview
 
 This project is an AI-powered product triage system designed to simulate how product teams can automate issue classification and support workflows using modern AI tools.
