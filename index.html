@@ -1,9 +1,50 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h2>AI Chatbot Triage</h2>
+<head>
+  <title>AI Product Triage Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+    }
 
-<input id="msg" placeholder="Ask something..." style="width:60%">
+    h2 {
+      text-align: center;
+    }
+
+    input {
+      width: 70%;
+      padding: 8px;
+    }
+
+    button {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    #chat {
+      margin-top: 20px;
+    }
+
+    .bug { color: red; }
+    .feature { color: green; }
+    .how-to { color: blue; }
+    .other { color: gray; }
+
+    .response-box {
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 5px;
+      background: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+
+<h2>AI Product Triage Chatbot</h2>
+
+<input id="msg" placeholder="Describe an issue or request..." />
 <button onclick="send()">Send</button>
 
 <div id="chat"></div>
@@ -11,15 +52,34 @@
 <script>
 async function send() {
   const msg = document.getElementById("msg").value;
+  if (!msg) return;
+
   const res = await fetch("/chat", {
     method: "POST",
     headers: {"Content-Type":"application/json"},
     body: JSON.stringify({message: msg})
   });
+
   const data = await res.json();
-  document.getElementById("chat").innerHTML +=
-    "<p><b>You:</b> "+msg+"</p><p><b>AI:</b> "+data.reply+"</p>";
+  const reply = data.reply;
+
+  let labelClass = "other";
+  if (reply.includes("Triage_Label: bug")) labelClass = "bug";
+  if (reply.includes("Triage_Label: feature")) labelClass = "feature";
+  if (reply.includes("Triage_Label: how-to")) labelClass = "how-to";
+
+  document.getElementById("chat").innerHTML += `
+    <p><b>You:</b> ${msg}</p>
+    <div class="response-box ${labelClass}">
+      <b>AI:</b><br>${reply.replace(/\n/g, "<br>")}
+    </div>
+  `;
+
+  document.getElementById("msg").value = "";
 }
 </script>
+
 </body>
 </html>
+
+
