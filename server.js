@@ -1,9 +1,17 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const path = require("path");
+
 const app = express();
 
 app.use(express.json());
 
+// Serve index.html at root
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// AI endpoint
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
@@ -24,3 +32,5 @@ app.post("/chat", async (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000);
+
+
