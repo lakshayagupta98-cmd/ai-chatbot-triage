@@ -3,15 +3,16 @@ const fetch = require("node-fetch");
 const path = require("path");
 
 const app = express();
-
 app.use(express.json());
 
-// Serve the frontend
+let logs = [];
+
+// Serve frontend
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// AI Chat Endpoint
+// Chat endpoint
 app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
@@ -20,19 +21,21 @@ app.post("/chat", async (req, res) => {
       return res.status(400).json({ error: "Message is required" });
     }
 
+    logs.push({ message: userMessage, time: new Date() });
+
     const prompt = `
 You are an AI-powered product triage assistant.
 
-Your job is to:
+Your job:
 1. Provide a short helpful answer.
-2. Classify the issue into one of:
+2. Classify the issue into:
    - bug
    - feature
    - how-to
    - other
 3. Provide a confidence score between 0 and 1.
 
-Respond strictly in this format:
+Respond STRICTLY in this format:
 
 Answer: <short explanation>
 
@@ -66,11 +69,11 @@ ${userMessage}
     res.json({ reply: data.choices[0].message.content });
 
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Server error:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log("Server running...");
+  console.log("AI Chatbot running...");
 });
